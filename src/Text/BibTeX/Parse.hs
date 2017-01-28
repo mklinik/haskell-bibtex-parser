@@ -86,12 +86,16 @@ Parse a BibTeX entry like
 .
 -}
 entry :: Parser Entry.T
-entry =
-   do entryType <- char '@' >> identifier
+entry = do
+  entryType <- char '@' >> identifier
+  if entryType == "string"
+    then
+      braces $ ((uncurry Entry.BibString) <$> assignment)
+    else
       braces $
-         liftM2 (Entry.Cons entryType)
-            (Parsec.try bibIdentifier)
-            (comma >> sepEndBy assignment comma)
+        liftM2 (Entry.Entry entryType)
+          (Parsec.try bibIdentifier)
+          (comma >> sepEndBy assignment comma)
 
 {- |
 Parse an assignment like

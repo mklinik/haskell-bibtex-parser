@@ -13,12 +13,17 @@ data FieldValue
   | Quoted String
   deriving Show
 
-data T =
-   Cons {
-      entryType :: String,
-      identifier :: String,
-      fields :: [(String, FieldValue)]
-   }
+-- Bibtex supports four kinds of entries:
+--  @string, @preamble, @comment and bibliography items
+-- Only @string and bibliography items are supported for now.
+-- http://www.bibtex.org/Format/
+data T
+  = Entry
+    { entryType :: String
+    , identifier :: String
+    , fields :: [(String, FieldValue)]
+    }
+   | BibString String FieldValue
    deriving (Show)
 
 {- |

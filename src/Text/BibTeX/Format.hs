@@ -11,12 +11,14 @@ formatValue (Entry.Naked v) = v
 formatValue (Entry.Quoted v) = "{" ++ v ++ "}"
 
 entry :: Entry.T -> String
-entry (Entry.Cons entryType bibId items) =
+entry (Entry.Entry entryType bibId items) =
    let formatItem (name, value) =
          "  "++name++" = "++ formatValue value ++",\n"
    in  "@" ++ entryType ++ "{" ++ bibId ++ ",\n" ++
        concatMap formatItem items ++
        "}\n"
+entry (Entry.BibString name value) =
+  "@string{" ++ name ++ " = " ++ formatValue value ++ "}\n"
 
 enumerate :: [String] -> String
 enumerate =
