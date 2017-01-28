@@ -131,8 +131,8 @@ or
 -}
 value :: Parser Entry.FieldValue
 value =
-   Entry.Naked <$> lexeme (many1 letter) <|> -- for fields like: month = jul
    Entry.Naked <$> lexeme (many1 digit)  <|> -- for fields like: year = 2010
+   Entry.Naked <$> lexeme identifier <|> -- for definitions like usenix04
    Entry.Quoted <$> braces (texSequence '}') <|>
    Entry.Quoted <$> lexeme (between (char '"') (char '"') (texSequence '"'))
 
