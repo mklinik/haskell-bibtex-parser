@@ -100,7 +100,7 @@ Parse an assignment like
 
 .
 -}
-assignment :: Parser (String, String)
+assignment :: Parser (String, Entry.FieldValue)
 assignment =
    liftM2 (,)
       bibIdentifier
@@ -125,12 +125,12 @@ or
 
 .
 -}
-value :: Parser String
+value :: Parser Entry.FieldValue
 value =
-   lexeme (many1 letter) <|> -- for fields like: month = jul
-   lexeme (many1 digit)  <|> -- for fields like: year = 2010
-   braces (texSequence '}') <|>
-   lexeme (between (char '"') (char '"') (texSequence '"'))
+   Entry.Naked <$> lexeme (many1 letter) <|> -- for fields like: month = jul
+   Entry.Naked <$> lexeme (many1 digit)  <|> -- for fields like: year = 2010
+   Entry.Quoted <$> braces (texSequence '}') <|>
+   Entry.Quoted <$> lexeme (between (char '"') (char '"') (texSequence '"'))
 
 {- |
 Parse a sequence of 'texBlock's until the occurrence of a closing character.

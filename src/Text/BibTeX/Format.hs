@@ -6,14 +6,17 @@ import Data.List (intersperse, )
 import Data.List.HT (switchR, )
 
 
+formatValue :: Entry.FieldValue -> String
+formatValue (Entry.Naked v) = v
+formatValue (Entry.Quoted v) = "{" ++ v ++ "}"
+
 entry :: Entry.T -> String
 entry (Entry.Cons entryType bibId items) =
    let formatItem (name, value) =
-         "  "++name++" = {"++value++"},\n"
+         "  "++name++" = "++ formatValue value ++",\n"
    in  "@" ++ entryType ++ "{" ++ bibId ++ ",\n" ++
        concatMap formatItem items ++
        "}\n"
-
 
 enumerate :: [String] -> String
 enumerate =
