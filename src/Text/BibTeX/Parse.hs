@@ -29,7 +29,7 @@ import qualified Text.ParserCombinators.Parsec as Parsec
 import Text.ParserCombinators.Parsec
    (CharParser, Parser,
     (<|>), alphaNum, digit, letter, char, noneOf, oneOf,
-    between, many, many1, sepEndBy, )
+    between, many, many1, sepEndBy, sepBy1)
 
 import Control.Monad (liftM, liftM2, liftM3, )
 
@@ -45,10 +45,11 @@ lexer =
    }
 
 
-identifier, comma, equals :: CharParser st String
+identifier, comma, equals, hash :: CharParser st String
 identifier = T.identifier lexer
 comma = T.comma lexer
 equals = T.symbol lexer "="
+hash = T.symbol lexer "#"
 
 braces, lexeme :: CharParser st a -> CharParser st a
 braces = T.braces lexer
@@ -104,7 +105,7 @@ Parse an assignment like
 
 .
 -}
-assignment :: Parser (String, Entry.FieldValue)
+assignment :: Parser (String, [Entry.FieldValue])
 assignment =
    liftM2 (,)
       bibIdentifier
@@ -129,8 +130,12 @@ or
 
 .
 -}
-value :: Parser Entry.FieldValue
-value =
+
+value :: Parser [Entry.FieldValue]
+value = sepBy1 valuePart hash
+
+valuePart :: Parser Entry.FieldValue
+valuePart =
    Entry.Naked <$> lexeme (many1 digit)  <|> -- for fields like: year = 2010
    Entry.Naked <$> lexeme identifier <|> -- for definitions like usenix04
    Entry.Quoted <$> braces (texSequence '}') <|>

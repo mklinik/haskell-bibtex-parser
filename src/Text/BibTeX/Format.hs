@@ -5,10 +5,12 @@ import qualified Text.BibTeX.Entry as Entry
 import Data.List (intersperse, )
 import Data.List.HT (switchR, )
 
+formatValue :: [Entry.FieldValue] -> String
+formatValue l = hashSepList (map formatValuePart l)
 
-formatValue :: Entry.FieldValue -> String
-formatValue (Entry.Naked v) = v
-formatValue (Entry.Quoted v) = "{" ++ v ++ "}"
+formatValuePart :: Entry.FieldValue -> String
+formatValuePart (Entry.Naked v) = v
+formatValuePart (Entry.Quoted v) = "{" ++ v ++ "}"
 
 entry :: Entry.T -> String
 entry (Entry.Entry entryType bibId items) =
@@ -37,3 +39,9 @@ commaSepList = sepList ','
 
 sepList :: Char -> [String] -> String
 sepList sep = concat . intersperse (sep:" ")
+
+hashSepList :: [String] -> String
+hashSepList = sepList_ '#'
+
+sepList_ :: Char -> [String] -> String
+sepList_ sep = concat . intersperse (" " ++ sep:" ")

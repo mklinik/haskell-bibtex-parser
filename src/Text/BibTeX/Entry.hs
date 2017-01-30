@@ -21,9 +21,11 @@ data T
   = Entry
     { entryType :: String
     , identifier :: String
-    , fields :: [(String, FieldValue)]
+    -- field values in general are of the form "foo" # bar # "baz"
+    -- where # denotes string concatenation and bar is an identifier referring to a pre-defined string
+    , fields :: [(String, [FieldValue])]
     }
-   | BibString String FieldValue
+   | BibString String [FieldValue]
    deriving (Show)
 
 {- |
