@@ -26,6 +26,7 @@ data T
     , fields :: [(String, [FieldValue])]
     }
    | BibString String [FieldValue]
+   | Comment String
    deriving (Show)
 
 {- |

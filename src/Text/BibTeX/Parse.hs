@@ -39,7 +39,10 @@ import Data.List.HT (chop, )
 lexer :: T.TokenParser st
 lexer =
    T.makeTokenParser $ L.emptyDef {
-      L.commentLine = "%",
+      -- disable comments in the lexer. We want to preserve comments
+      L.commentLine = "",
+      L.commentStart = "",
+      L.commentEnd = "",
       L.identStart = alphaNum,
       L.identLetter = alphaNum
    }
@@ -67,11 +70,11 @@ and can be used for files that contain both BibTeX and other data
 or it can be used for automated filetype checking.
 -}
 file :: Parser [Entry.T]
-file = comment >> sepEndBy entry comment
+file = many (entry <|> comment)
 
 
-comment :: Parser String
-comment = many $ noneOf "@"
+comment :: Parser Entry.T
+comment = Entry.Comment <$> (many1 $ noneOf "@")
 
 
 {- |

@@ -21,6 +21,7 @@ entry (Entry.Entry entryType bibId items) =
        "}\n"
 entry (Entry.BibString name value) =
   "@string{" ++ name ++ " = " ++ formatValue value ++ "}\n"
+entry (Entry.Comment cmt) = cmt
 
 enumerate :: [String] -> String
 enumerate =
