@@ -38,5 +38,7 @@ flipName name =
    in  dropWhile (flip elem ", ") firstName ++ " " ++ surname
 
 lowerCaseFieldNames :: T -> T
+lowerCaseFieldNames t@(BibString _ _) = t
+lowerCaseFieldNames t@(Comment _) = t
 lowerCaseFieldNames entry =
    entry {fields = map (mapFst (map toLower)) $ fields entry}
